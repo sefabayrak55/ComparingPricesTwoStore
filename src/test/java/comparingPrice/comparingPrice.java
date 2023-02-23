@@ -69,6 +69,42 @@ public class comparingPrice {
         {
             muzinoProductTitles.add(muzinoProductTitleCount.get(i).getText());
             muzinoProductPrices.add(muzinoProductPriceCount.get(i).getText().replace(".","").replace("","").replace("TL",""));
+        }
+
+        //Outdoor ürünler
+        driver.get("https://www.mizunotr.com/arama?q=outdoor");
+        try {
+            long lastHeight = (long) ((JavascriptExecutor) driver).executeScript("return document.body.scrollHeight");
+            int cont=1000;
+            while (true) {
+                ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, "+cont+");");
+                Thread.sleep(1000);
+
+                long newHeight = (long) ((JavascriptExecutor) driver).executeScript("return document.body.scrollHeight");
+                if (newHeight <= cont) {
+                    break;
+                }
+//                      lastHeight = newHeight;
+                cont+=500;
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        List<WebElement> muzinoOutdoorProductTitleCount = driver.findElements(By.xpath("//*[@class='col col-12 text-description detailLink']"));
+        List<WebElement> muzinoOutdoorProductPriceCount = driver.findElements(By.xpath("//div[contains(@class, 'currentPrice')]"));
+
+        System.out.println("Mizuno Outdoor Ürünleri Sayısı: " + muzinoOutdoorProductTitleCount.size());
+        System.out.println("Mizuno Outdoor Ürünleri Fiyatları Sayısı: " + muzinoOutdoorProductPriceCount.size());
+
+        for (int i = 0; i < muzinoOutdoorProductTitleCount.size(); i++)
+        {
+            muzinoProductTitles.add(muzinoOutdoorProductTitleCount.get(i).getText());
+            muzinoProductPrices.add(muzinoOutdoorProductPriceCount.get(i).getText().replace(".","").replace("","").replace("TL",""));
+        }
+
+        for (int i = 0; i < muzinoProductTitles.size(); i++)
+        {
             System.out.println(muzinoProductTitles.get(i) + " - " + muzinoProductPrices.get(i));
         }
 
@@ -86,6 +122,7 @@ public class comparingPrice {
 
         List<String> greenProductTitles = new ArrayList<String>();
         List<String> greenProductPrices = new ArrayList<String>();
+        List<String> deactiveProducts = new ArrayList<String>();
 
         for (int i = 0; i < greenProductTitleCount.size(); i++)
         {
@@ -111,6 +148,21 @@ public class comparingPrice {
                         System.out.println(greenProductTitles.get(i) + " - " + greenProductPrices.get(i) + " -> " + muzinoProductPrices.get(j));
                     }
                 }
+            }
+        }
+
+        for (int i = 0; i < 5; i++)
+            System.out.println("");
+        System.out.println("***********************************");
+        System.out.println("Satışta Olmayanlar:");
+        for (int i = 0; i < 5; i++)
+            System.out.println("");
+
+        for(int i=0; i < greenProductTitles.size(); i++)
+        {
+            if(!muzinoProductTitles.contains(greenProductTitles.get(i)))
+            {
+                System.out.println(greenProductTitles.get(i));
             }
         }
     }
